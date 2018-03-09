@@ -1,4 +1,7 @@
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Date;
 import java.util.Scanner;
@@ -19,10 +22,14 @@ public class Main {
 
     public static void main(String[] args) throws IOException {
         int preciocosto, precioventa, pos;
-        String preciocosto1, precioventa1, nombre, estado, tamano, tipo, tipocomida, posicion, correoelectronico = "", nombrecliente = "", RTN = "", CAI = "";
+        double totalventas;
+        String fecha1, preciocosto1, precioventa1, nombre, estado, tamano, tipo, tipocomida, posicion, correoelectronico = "", nombrecliente = "", RTN = "", CAI = "";
         Date fecha = new Date();
         InventarioClase ic = new InventarioClase();
         Factura fac = new Factura();
+        Ingresos ing = new Ingresos();
+        Ventas ven = new Ventas();
+        Producto pro = new Producto();
         switch (menu()) {
             case 1:
                 switch (menuproducto()) {
@@ -91,7 +98,7 @@ public class Main {
                 nombrecliente = JOptionPane.showInputDialog("Nombre del Cliente:");
                 RTN = JOptionPane.showInputDialog("Ingrese RTN:");
                 CAI = JOptionPane.showInputDialog("Ingrese CAI:");
-                String fecha1 = JOptionPane.showInputDialog("Ingrese Fecha (yy/MM/dd):");
+                fecha1 = JOptionPane.showInputDialog("Ingrese Fecha (yy/MM/dd):");
                 fecha.setYear(fecha1.charAt(0) + fecha1.charAt(1));
                 fecha.setMonth(fecha1.charAt(3) + fecha1.charAt(4));
                 fecha.setDate(fecha1.charAt(6) + fecha1.charAt(7));
@@ -105,17 +112,49 @@ public class Main {
                 }
                 break;
             case 7:
-                Ventas ven = new Ventas();
-                JOptionPane.showMessageDialog(null, "Total de ventas:" + ven.getTotalventafactura());
-                JOptionPane.showMessageDialog(null, "Fecha:" + fecha);
+                fecha1 = JOptionPane.showInputDialog("Ingrese Fecha (yy/MM/dd):");
+                fecha.setYear(fecha1.charAt(0) + fecha1.charAt(1));
+                fecha.setMonth(fecha1.charAt(3) + fecha1.charAt(4));
+                fecha.setDate(fecha1.charAt(6) + fecha1.charAt(7));
+                JOptionPane.showMessageDialog(null, "Venta Registrada");
+                ing.getListaventas().add(new Ventas(ven.getTotalventafactura(), fecha));
                 break;
             case 8:
-                break;
-            case 9:
+
+                File archivo = null;
+                FileWriter fw = null;
+                BufferedWriter bw = null;
                 try {
-                    InventarioClase.guardar(ic.getListaproducto());
-                } catch (IOException e) {
+                    archivo = new File("./InventarioyIngresos.txt");
+                    fw = new FileWriter(archivo, true);
+                    bw = new BufferedWriter(fw);
+                    bw.write("Inventario");
+                    bw.newLine();
+                    for (Object temp : ic.getListaproducto()) {
+                        bw.write((String) temp);
+                    }
+                    bw.newLine();
+                    bw.write("Ingresos");
+                    for (Object temp1 : ing.getListaventas()) {
+                        bw.write((String) temp1);
+                    }
+                    bw.newLine();
+                    bw.flush();
+                } catch (Exception e) {
                 }
+                bw.close();
+                fw.close();
+
+                break;
+
+            case 9:
+                System.out.println("Ventas de la Compañia");
+                System.out.print("Total" + ven.getTotalventafactura());
+                System.out.println("");
+                System.out.print("Impuesto" + pro.getImp());
+                System.out.println("");
+                System.out.print(fecha);
+                
                 break;
             default:
                 JOptionPane.showMessageDialog(null, "Opcion NO valida");

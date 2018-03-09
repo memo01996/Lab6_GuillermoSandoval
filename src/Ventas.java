@@ -13,10 +13,11 @@ import java.util.Date;
 public class Ventas {
 
     private double totalventafactura;
-    private Date fecha = new Date();
+    private Date fecha;
 
-    public Ventas(double totalventafactura) {
+    public Ventas(double totalventafactura, Date fecha) {
         this.totalventafactura = totalventafactura;
+        this.fecha = fecha;
     }
 
     public Ventas() {
